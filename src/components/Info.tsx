@@ -1,4 +1,3 @@
-import React from 'react';
 import '../App.css';
 
 
@@ -16,7 +15,7 @@ const InfoDetail = ({ info, isFirst }: { info: IpInfo, isFirst: boolean }) => {
       }
       <div className={` ${isFirst ? "px-1 min-w-0" : "px-6"}`}>
         <p className=' font-bold text-sm text-[#969696] mb-2'>{key}</p>
-        <p className=' font-medium text-2xl'>{value}</p>
+        <p className={` ${isFirst ? " text-ellipsis overflow-hidden whitespace-nowrap" : ""} font-medium text-2xl`}>{value}</p>
       </div>
     </div>
   )
@@ -31,7 +30,6 @@ const MobileInfoDetail = ({ info }: { info: IpInfo }) => {
     </div>
   )
 }
-
 
 const Info = () => {
   const ipInfo: IpInfo[] = [
@@ -53,17 +51,17 @@ const Info = () => {
   return (
     <>
       <div className='mobile'>
-        <div className=' absolute left-[8%] w-10/12 bg-white -bottom-36 rounded-2xl p-6 text-center shadow'>
+        <div className=' absolute z-[1000] left-[8%] w-10/12 bg-white -bottom-36 rounded-2xl p-6 text-center shadow'>
           {ipInfo.map((info, i) => {
-            return <MobileInfoDetail info={info} />
+            return <MobileInfoDetail key={i} info={info} />
           })}
         </div>
       </div>
 
       <div className='desktop'>
-        <div className='absolute left-[10%] -bottom-16 w-4/5 bg-white rounded-2xl p-8 grid grid-cols-4 gap-0 items-stretch shadow'>
+        <div className='absolute z-[1000] left-[10%] -bottom-24  lg:-bottom-20 w-4/5 bg-white rounded-2xl p-8 grid grid-cols-4 gap-0 items-stretch shadow'>
           {ipInfo.map((info, i) => {
-            return <InfoDetail info={info} isFirst={i === 0} />
+            return <InfoDetail key={i} info={info} isFirst={i === 0} />
           })}
         </div>
       </div>
