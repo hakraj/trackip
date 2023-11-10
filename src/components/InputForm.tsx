@@ -1,6 +1,18 @@
 import { useState } from "react";
 
-const InputForm = () => {
+const InputForm = (
+  { setGeo, setInfo }
+    :
+    {
+      setGeo: React.Dispatch<React.SetStateAction<number[]>>,
+      setInfo: React.Dispatch<React.SetStateAction<{
+        ip: string;
+        location: string;
+        timezone: string;
+        isp: string;
+      }>>
+    }
+) => {
   const [ip, setIp] = useState("");
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -9,11 +21,45 @@ const InputForm = () => {
 
   };
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
-    console.log("submitted sucessfully!");
-    setIp("");
 
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+
+    if (!ipRegex.test(ip)) {
+      return alert("Invalid input. Please enter a valid IP address.")
+    }
+
+    try {
+
+      const res: Response = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=fce0ba1966824d228aaf0e20253b0ecd&ip_address=${ip}`);
+
+      if (!res.ok) {
+        return alert("Invalid input. Please enter a valid IP address.")
+      }
+
+      const data = await res.json()
+
+      if (data.error || !data?.city) {
+        return alert("Invalid input. Please enter a valid IP address.")
+      }
+
+      setGeo([data?.latitude, data?.longitude]);
+      setInfo({
+        ip: data?.ip_address,
+        location: `${data?.city}, ${data?.region}, ${data?.country} ${data?.flag?.emoji}`,
+        timezone: `UTC   ${data?.timezone?.gmt_offset}:00`,
+        isp: data?.connection?.isp_name
+      })
+
+      console.log("submitted sucessfully!");
+
+    } catch (error) {
+      console.log(error);
+      // throw new Error("Submission failed");
+    }
+
+    return setIp("");
   }
 
   return (

@@ -26,26 +26,28 @@ const MobileInfoDetail = ({ info }: { info: IpInfo }) => {
   return (
     <div className='my-2'>
       <p className=' font-bold text-xs text-[#969696]'>{key}</p>
-      <p className=' font-medium text-xl'>{value}</p>
+      <p className=' font-medium text-xl'>{value && value.length < 28 ? value : `${value.substring(0, 27)}...`}</p>
     </div>
   )
 }
 
-const Info = () => {
+const Info = ({ info }: { info: { ip: string, location: string, timezone: string, isp: string } }) => {
+  const { ip, location, timezone, isp } = info;
+
   const ipInfo: IpInfo[] = [
     {
       key: "IP Address",
-      value: "192.212.174.101"
+      value: ip
     },
     {
       key: "Location",
-      value: "Ikeja, Lagos, Nigeria"
+      value: location
     }, {
       key: "Timezone",
-      value: "GMT +01:00"
+      value: timezone
     }, {
       key: "ISP",
-      value: "Space X Starlink"
+      value: isp
     },
   ]
   return (
